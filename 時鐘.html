@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>時鐘</title>
+    <style>
+        @font-face {
+            font-family: 'ClockFont';
+            src: url('font/CursedTimerUlil-Aznm.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        body {
+            margin: 0;
+            height: 100vh;
+            background: linear-gradient(135deg, #1e2a47, #2f4e6d);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        #clock {
+            width: 300px;
+            height: 300px;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        #hour {
+            width: 20%;
+            height: 6px;
+            background: #ff5722;
+            border-radius: 5px;
+            position: absolute;
+            left: 30%;
+            top: calc(50% - 3px);
+            transform-origin: right center;
+        }
+
+        #minute {
+            width: 40%;
+            height: 4px;
+            background: #03a9f4;
+            border-radius: 5px;
+            position: absolute;
+            left: 10%;
+            top: calc(50% - 2px);
+            transform-origin: right center;
+        }
+
+        #second {
+            width: 44%;
+            height: 4px;
+            background: #8bc34a;
+            border-radius: 5px;
+            position: absolute;
+            left: 6%;
+            top: calc(50% - 2px);
+            transform-origin: right center;
+
+            img {
+                rotate: 200deg;
+                width: 30px;
+                height: 30px;
+                transform: translate(0px, 5px);
+            }
+        }
+
+        #time {
+            font-size: 28px;
+            color: black;
+            font-family: 'ClockFont';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .particle {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            background-color: rgba(0, 255, 255, 0.7);
+            border-radius: 50%;
+            animation: moveParticles 3s infinite linear;
+            z-index: -2;
+        }
+
+        .clock-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url(./images/clockbackground.png) no-repeat center;
+            background-size: cover;
+            background-position: 0px 0px;
+            border-radius: 50%;
+            z-index: -1;
+        }
+
+        @keyframes moveParticles {
+            0% {
+                transform: translate(0, 0);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translate(calc(100vw - 50px), calc(100vh - 50px));
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="clock">
+        <div class="clock-background"></div>
+        <div id="hour"></div>
+        <div id="minute"></div>
+        <div id="second">
+            <!-- <img src="./images/comet.png" alt=""> -->
+        </div>
+    </div>
+    <div id="time"></div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        const elHour = document.getElementById('hour')
+        const elMinute = document.getElementById('minute')
+        const elSecond = document.getElementById('second')
+
+        function createParticle() {
+            const particle = document.createElement('div');
+            particle.classList.add('particle');
+            document.body.appendChild(particle);
+
+            const randomX = Math.random() * window.innerWidth;
+            const randomY = Math.random() * window.innerHeight;
+
+            particle.style.left = `${randomX}px`;
+            particle.style.top = `${randomY}px`;
+
+            setTimeout(() => {
+                particle.remove();
+            }, 3000); // 粒子在3秒後消失
+        }
+
+        // 粒子生成間隔
+        const clock = () => {
+            const date = new Date()
+            const h = date.getHours()
+            const m = date.getMinutes()
+            const s = date.getSeconds()
+
+            elHour.style.transform = `rotate(${h * 30 + 90}deg)`
+            elMinute.style.transform = `rotate(${m * 6 + 90}deg)`
+            elSecond.style.transform = `rotate(${s * 6 + 90}deg)`
+            $('#time').text(`${String(h).padStart(2, '0')}：${String(m).padStart(2, '0')}：${String(s).padStart(2, '0')}`)
+        }
+        setInterval(createParticle, 30)
+        setInterval(clock, 1000)
+        clock()
+    </script>
+</body>
+
+</html>
