@@ -28,15 +28,15 @@
             width: 300px;
             height: 300px;
             position: absolute;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%);
+            left: calc(50% - 150px);
+            top: calc(50% - 150px);
+            animation: subtleBounce 0.8s ease-in-out infinite alternate;
         }
 
         #hour {
             width: 20%;
             height: 6px;
-            background: #ff5722;
+            background: #a16d00;
             border-radius: 5px;
             position: absolute;
             left: 30%;
@@ -47,7 +47,7 @@
         #minute {
             width: 40%;
             height: 4px;
-            background: #03a9f4;
+            background: #a16d00;
             border-radius: 5px;
             position: absolute;
             left: 10%;
@@ -58,7 +58,7 @@
         #second {
             width: 44%;
             height: 4px;
-            background: #8bc34a;
+            background: #a16d00;
             border-radius: 5px;
             position: absolute;
             left: 6%;
@@ -75,15 +75,25 @@
 
         #time {
             font-size: 28px;
-            color: black;
+            color: white;
             font-family: 'ClockFont';
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+            left: calc(50% - 80.5px);
+            top: calc(50% - 19px);
+            animation: subtleBounce 0.8s ease-in-out infinite alternate;
         }
 
         .particle {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            background-color: rgba(0, 255, 255, 0.7);
+            border-radius: 50%;
+            animation: moveParticles 3s infinite linear;
+            z-index: -2;
+        }
+
+        .comet {
             position: absolute;
             width: 5px;
             height: 5px;
@@ -104,6 +114,19 @@
             background-position: 0px 0px;
             border-radius: 50%;
             z-index: -1;
+            filter: blur(0.5px);
+            box-shadow: 20px 15px 20px rgba(161, 109, 0, 0.7);
+        }
+
+
+        @keyframes subtleBounce {
+            0% {
+                transform: translateY(0);
+            }
+
+            100% {
+                transform: translateY(-15px);
+            }
         }
 
         @keyframes moveParticles {
@@ -121,21 +144,16 @@
 </head>
 
 <body>
-
     <div id="clock">
         <div class="clock-background"></div>
         <div id="hour"></div>
         <div id="minute"></div>
         <div id="second">
-            <!-- <img src="./images/comet.png" alt=""> -->
         </div>
     </div>
     <div id="time"></div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        const elHour = document.getElementById('hour')
-        const elMinute = document.getElementById('minute')
-        const elSecond = document.getElementById('second')
 
         function createParticle() {
             const particle = document.createElement('div');
@@ -152,17 +170,15 @@
                 particle.remove();
             }, 3000); // 粒子在3秒後消失
         }
-
-        // 粒子生成間隔
         const clock = () => {
             const date = new Date()
             const h = date.getHours()
             const m = date.getMinutes()
             const s = date.getSeconds()
 
-            elHour.style.transform = `rotate(${h * 30 + 90}deg)`
-            elMinute.style.transform = `rotate(${m * 6 + 90}deg)`
-            elSecond.style.transform = `rotate(${s * 6 + 90}deg)`
+            $('#hour').css('transform', `rotate(${((h % 12) + m / 60 + s / 3600) * 30 + 90}deg)`)
+            $('#minute').css('transform', `rotate(${(m + s / 60) * 6 + 90}deg)`)
+            $('#second').css('transform', `rotate(${s * 6 + 90}deg)`)
             $('#time').text(`${String(h).padStart(2, '0')}：${String(m).padStart(2, '0')}：${String(s).padStart(2, '0')}`)
         }
         setInterval(createParticle, 30)
